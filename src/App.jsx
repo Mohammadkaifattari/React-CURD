@@ -1,27 +1,36 @@
-import React, { useActionState, useState } from 'react'
+import React, { useActionState, useEffect, useState } from 'react'
 import "./index.css"
+    
 
 const App = () => {
   const [title, setTitle] = useState(``)
   const [text, setText] = useState(``)
   const [note, setNote] = useState([])
+  useEffect(()=>{
+  const getdata = localStorage.getItem('note')
+    if (getdata) {
+  setNote(JSON.parse(getdata))
+    }
+  },[])
+
 
 
 
   function addNotes(e) {
-    console.log(`note added `);
     e.preventDefault()
+    if (!title ||  !text) return 
     let arry = [...note]
     arry.push({ title, text })
+    localStorage.setItem('note' , JSON.stringify(arry))
     setNote(arry)
-
     setTitle("")
     setText("")
-
   }
+
   function deletenote(idx) {
     let arrow = [...note]
     arrow.splice(idx, 1)
+    localStorage.setItem('note' , JSON.stringify(arrow))
     setNote(arrow)
 
   }
@@ -59,7 +68,7 @@ const App = () => {
 
               <p className='  break-words text-blue-900 '>{e.text}</p>
               <button
-                onClick={(idx) => {
+                onClick={() => {
                   deletenote(idx)
                 }}
                 className=' absolute bottom-5 right-12 bg-red-600 px-3  text-white active:scale-95 rounded font-bold  '>Delete</button>
